@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public enum GameState { GameOver, Pause, Continue, StageStart, StageClear, Restart }
+    public enum GameState { GameOver, Pause, Continue, StageStart, StageClear, Restart, GameExit }
 
     public GameState gameState;
     public GameObject ball;
     public GameObject block;
     public BouncingBall bouncingBall;
     public static GameManager instance;
-    public int level = 0; //씬이 넘어갈 때 마다 하나씩 증가
+    public int stagelevel = 0; //씬이 넘어갈 때 마다 하나씩 증가
     public bool isDie;
-    public bool isAddLevel = false;
 
     bool isPause = false;
 
@@ -34,9 +33,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameState = GameState.StageStart;
         ball = gameObject.GetComponent<GameObject>();
         block = gameObject.GetComponent<GameObject>();
-        gameState = GameState.StageStart;
     }
 
     // Update is called once per frame
@@ -57,7 +56,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.StageClear:
-                StageClear();
+                StageClear(SceneManagers.sceneInstance.currSceneBuildIndex);
                 break;
 
             case GameState.StageStart:
@@ -68,45 +67,37 @@ public class GameManager : MonoBehaviour
                 Continue();
                 break;
         }
+        GameExit();
     }
 
     void Restart()
-    {
-       if(Input.GetKeyDown(KeyCode.R))
-       {
-           ball.transform.position = new Vector3(0, 0, 0);
-           block.transform.position = new Vector3(0, -8.6f, 0);
-           bouncingBall.count = 1;
-           gameState = GameState.Restart;
-       }
+    {   
+        ball.transform.position = new Vector3(0, 0, 0);
+        block.transform.position = new Vector3(0, -8.6f, 0);
+        bouncingBall.count = 1;
+        gameState = GameState.StageStart;
     }
 
     void Pause()
     {
-       if(Input.GetKeyDown(KeyCode.P))
+        if (!isPause)
         {
-            if(!isPause)
-            {
-                isPause = true;
-                Time.timeScale = 0;
-            }
-            else if(isPause)
-            {
-                isPause = false;
-                Time.timeScale = 1;
-            }
-
-            gameState = GameState.Pause;
+            isPause = true;
+            Time.timeScale = 0;
         }
-              
+        else if (isPause)
+        {
+            isPause = false;
+            Time.timeScale = 1;
+            gameState = GameState.StageStart;
+        }           
     }
 
     void Continue()
     {
         if (isDie && Input.GetKeyDown(KeyCode.C))
         {                    
-           level = 1;
-           gameState = GameState.Continue;
+           stagelevel = 1;
         }
     }
 
@@ -118,19 +109,28 @@ public class GameManager : MonoBehaviour
 
     void StageStart()
     {
-        isAddLevel = false;
-
-        if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            isPause = false;
-            Time.timeScale = 1;
+            gameState = GameState.Pause;
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            gameState = GameState.Restart;
         }
     }
 
-    void StageClear()
+    public int StageClear(int level)
     {
         level++;
-        isAddLevel = true;
         gameState = GameState.StageStart;
+        return level;
+    }
+
+    void GameExit()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+          Application.Quit();          
+        }
     }
 }
