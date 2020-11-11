@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.StageClear:
-                StageClear(SceneManagers.sceneInstance.currSceneBuildIndex);
+                StageClear(stagelevel);
                 break;
 
             case GameState.StageStart:
@@ -66,8 +66,11 @@ public class GameManager : MonoBehaviour
             case GameState.Continue:
                 Continue();
                 break;
+
+            case GameState.GameExit:
+                GameExit();
+                break;
         }
-        GameExit();
     }
 
     void Restart()
@@ -81,13 +84,12 @@ public class GameManager : MonoBehaviour
     void Pause()
     {
         if (!isPause)
-        {
-            isPause = true;
+        {            
             Time.timeScale = 0;
+            isPause = !isPause;
         }
-        else if (isPause)
+        else
         {
-            isPause = false;
             Time.timeScale = 1;
             gameState = GameState.StageStart;
         }           
@@ -95,9 +97,9 @@ public class GameManager : MonoBehaviour
 
     void Continue()
     {
-        if (isDie && Input.GetKeyDown(KeyCode.C))
+        if (isDie)
         {                    
-           stagelevel = 1;
+           stagelevel = 0;          
         }
     }
 
@@ -109,6 +111,8 @@ public class GameManager : MonoBehaviour
 
     void StageStart()
     {
+        isDie = false;
+
         if (Input.GetKeyDown(KeyCode.P))
         {
             gameState = GameState.Pause;
@@ -128,9 +132,11 @@ public class GameManager : MonoBehaviour
 
     void GameExit()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-          Application.Quit();          
-        }
+        Application.Quit();
+    }
+
+    public void OnExitButton()
+    {
+        gameState = GameState.GameExit;    
     }
 }

@@ -29,36 +29,26 @@ public class SceneManagers : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void LoadNextScene()
     {
-        LoadNextScene();
-        LoadStageOne();
+       //현재 씬 정보를 가져옴
+       Scene scene = SceneManager.GetActiveScene();
+       
+       //현재 씬의 빌드 인덱스 가져옴
+       currSceneBuildIndex = scene.buildIndex;
+                  
+       //다음 씬을 빌드 하기위해 현재 씬 빌드 인덱스에서 +1해준다
+       GameManager.instance.stagelevel = GameManager.instance.StageClear(currSceneBuildIndex);
+       
+       //다음 씬을 불러온다.
+       SceneManager.LoadScene(GameManager.instance.stagelevel);             
     }
 
-    void LoadNextScene()
-    {
-        if(GameManager.instance.gameState == GameManager.GameState.StageClear)
-        {
-            //현재 씬 정보를 가져옴
-            Scene scene = SceneManager.GetActiveScene();
-
-            //현재 씬의 빌드 인덱스 가져옴
-            currSceneBuildIndex = scene.buildIndex;
-            
-            //다음 씬을 빌드 하기위해 현재 씬 빌드 인덱스에서 +1해준다
-            GameManager.instance.stagelevel = GameManager.instance.StageClear(currSceneBuildIndex);
-
-            //다음 씬을 불러온다.
-            SceneManager.LoadScene(GameManager.instance.stagelevel);
-        }        
-    }
-
-    void LoadStageOne() 
+    public void LoadStageOne() 
     {
         if(GameManager.instance.gameState == GameManager.GameState.Continue)
         {
-            SceneManager.LoadScene("Stage1");
-        }
+            SceneManager.LoadScene("Start");
+        }     
     }
 }
