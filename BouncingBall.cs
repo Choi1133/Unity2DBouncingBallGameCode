@@ -6,7 +6,6 @@ public class BouncingBall : MonoBehaviour
 {
     Rigidbody2D rig;
     public MoveBlock mb;
-    float reaction = 300.0f;
     public int count = 1;
 
     void Start()

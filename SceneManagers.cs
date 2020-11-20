@@ -48,7 +48,7 @@ public class SceneManagers : MonoBehaviour
     {
         if(GameManager.instance.gameState == GameManager.GameState.Continue)
         {
-            SceneManager.LoadScene("Start");
+            SceneManager.LoadScene("Stage1");
         }     
     }
 }

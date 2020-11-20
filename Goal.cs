@@ -8,7 +8,7 @@ public class Goal : MonoBehaviour
     {
         if(collision.gameObject.tag == "ball")
         {
-            GameManager.instance.gameState = GameManager.GameState.StageClear;
+            SceneManagers.sceneInstance.LoadNextScene();
         }
     }
 }

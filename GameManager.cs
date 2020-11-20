@@ -1,20 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public enum GameState { GameOver, Pause, Continue, StageStart, StageClear, Restart, GameExit }
+    public enum GameState { GameOver, Pause, Continue, StageStart, StageClear, GameExit }
 
     public GameState gameState;
-    public GameObject ball;
-    public GameObject block;
-    public BouncingBall bouncingBall;
     public static GameManager instance;
-    public int stagelevel = 0; //씬이 넘어갈 때 마다 하나씩 증가
+    public int stagelevel = 1; //씬이 넘어갈 때 마다 하나씩 증가
     public bool isDie;
 
-    bool isPause = false;
+    bool isPause = true;
 
     void Awake()
     {
@@ -34,8 +33,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         gameState = GameState.StageStart;
-        ball = gameObject.GetComponent<GameObject>();
-        block = gameObject.GetComponent<GameObject>();
     }
 
     // Update is called once per frame
@@ -49,10 +46,6 @@ public class GameManager : MonoBehaviour
 
             case GameState.Pause:
                 Pause();
-                break;
-
-            case GameState.Restart:
-                Restart();
                 break;
 
             case GameState.StageClear:
@@ -73,25 +66,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Restart()
-    {   
-        ball.transform.position = new Vector3(0, 0, 0);
-        block.transform.position = new Vector3(0, -8.6f, 0);
-        bouncingBall.count = 1;
-        gameState = GameState.StageStart;
-    }
-
     void Pause()
     {
         if (!isPause)
         {            
             Time.timeScale = 0;
-            isPause = !isPause;
+            isPause = true;
         }
-        else
+        else if (isPause)
         {
             Time.timeScale = 1;
             gameState = GameState.StageStart;
+            isPause = false;
         }           
     }
 
@@ -99,14 +85,19 @@ public class GameManager : MonoBehaviour
     {
         if (isDie)
         {                    
-           stagelevel = 0;          
+           SceneManagers.sceneInstance.LoadStageOne();
+           gameState = GameState.StageStart;
         }
     }
 
     void GameOver()
     {
         isDie = true;
-        gameState = GameState.Continue;
+        
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            gameState = GameState.Continue;
+        }
     }
 
     void StageStart()
@@ -116,10 +107,6 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             gameState = GameState.Pause;
-        }
-        else if (Input.GetKeyDown(KeyCode.R))
-        {
-            gameState = GameState.Restart;
         }
     }
 
