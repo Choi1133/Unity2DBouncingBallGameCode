@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     public GameState gameState;
     public static GameManager instance;
-    public int stagelevel = 1; //씬이 넘어갈 때 마다 하나씩 증가
+    public int stagelevel = 0; //씬이 넘어갈 때 마다 하나씩 증가
     public bool isDie;
 
     bool isPause = true;

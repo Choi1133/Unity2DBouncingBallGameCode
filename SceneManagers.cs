@@ -29,6 +29,14 @@ public class SceneManagers : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        if(currSceneBuildIndex == 0)
+        {
+            LoadNextScene();
+        }
+    }
+
     public void LoadNextScene()
     {
        //현재 씬 정보를 가져옴
@@ -48,7 +56,7 @@ public class SceneManagers : MonoBehaviour
     {
         if(GameManager.instance.gameState == GameManager.GameState.Continue)
         {
-            SceneManager.LoadScene("Stage1");
+            SceneManager.LoadScene("Start");
         }     
     }
 }
