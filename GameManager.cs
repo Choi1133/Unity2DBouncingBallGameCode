@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public int stagelevel = 0; //씬이 넘어갈 때 마다 하나씩 증가
     public bool isDie;
 
-    bool isPause = true;
+    bool isPause;
 
     void Awake()
     {
@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         gameState = GameState.StageStart;
+
+        isPause = false;
     }
 
     // Update is called once per frame
@@ -68,17 +70,19 @@ public class GameManager : MonoBehaviour
 
     void Pause()
     {
-        if (!isPause)
+        if (isPause)
         {            
             Time.timeScale = 0;
-            isPause = true;
+            gameState = GameState.StageStart;
         }
-        else if (isPause)
+
+        if (!isPause)
         {
             Time.timeScale = 1;
-            gameState = GameState.StageStart;
-            isPause = false;
-        }           
+            gameState = GameState.StageStart;           
+        }
+
+        Debug.Log(isPause);
     }
 
     void Continue()
@@ -107,6 +111,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             gameState = GameState.Pause;
+            isPause = !isPause;
         }
     }
 
